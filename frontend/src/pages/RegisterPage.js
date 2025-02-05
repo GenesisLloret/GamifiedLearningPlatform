@@ -1,26 +1,18 @@
-// frontend/src/pages/RegisterPage.js
 import React, { useState } from 'react';
 import { registerUser } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './PageStyles.css';
-
 function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
-
-  const handleRegister = async (e) => {
+  const handleRegister = async e => {
     e.preventDefault();
     const result = await registerUser({ username, password });
-    if (result.user) {
-      setMsg('Registro exitoso');
-      setTimeout(() => navigate('/login'), 1500);
-    } else {
-      setMsg(result.msg || 'Error en registro');
-    }
+    if (result.user) { setMsg('Registro exitoso'); setTimeout(() => navigate('/login'), 1500); }
+    else setMsg(result.msg || 'Error en registro');
   };
-
   return (
     <div className="page-container">
       <h1>Registro</h1>
@@ -33,5 +25,4 @@ function RegisterPage() {
     </div>
   );
 }
-
 export default RegisterPage;

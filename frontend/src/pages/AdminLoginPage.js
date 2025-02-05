@@ -1,9 +1,8 @@
-// frontend/src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { loginUser } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './PageStyles.css';
-function LoginPage() {
+function AdminLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
@@ -12,13 +11,15 @@ function LoginPage() {
     e.preventDefault();
     const result = await loginUser({ username, password });
     if (result.token) {
-      localStorage.setItem('token', result.token);
-      navigate('/dashboard');
+      if (result.user.role === 'admin') {
+        localStorage.setItem('token', result.token);
+        navigate('/admin/dashboard');
+      } else setMsg('Acceso denegado: Usuario no es administrador');
     } else setMsg(result.msg || 'Error al iniciar sesión');
   };
   return (
     <div className="page-container">
-      <h1>Inicio de Sesión</h1>
+      <h1>Inicio de Sesión Administrador</h1>
       {msg && <p>{msg}</p>}
       <form className="form-container" onSubmit={handleLogin}>
         <input className="form-input" type="text" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} required />
@@ -28,4 +29,4 @@ function LoginPage() {
     </div>
   );
 }
-export default LoginPage;
+export default AdminLoginPage;

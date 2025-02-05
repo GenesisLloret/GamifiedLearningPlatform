@@ -1,8 +1,8 @@
 # Gamified Learning Platform
 
-Este proyecto es una plataforma web de aprendizaje gamificada diseñada para demostrar competencias en el desarrollo full-stack. 
+Este proyecto es una plataforma web de aprendizaje gamificada diseñada para demostrar competencias en el desarrollo full-stack.
 
-A continuación se detalla el análisis de requisitos, la arquitectura y la selección de tecnologías, junto con el progreso actual y las expectativas para futuros desarrollos.
+A continuación se detalla el análisis de requisitos, la arquitectura, la selección de tecnologías, el progreso actual y las expectativas para futuros desarrollos.
 
 ---
 
@@ -10,14 +10,18 @@ A continuación se detalla el análisis de requisitos, la arquitectura y la sele
 
 - **Requisitos funcionales:**
   - Registro e inicio de sesión de usuarios.
-  - Gestión y administración de perfiles (roles: alumno, profesor, administrador) *(pendiente de implementación de roles avanzados)*.
-  - Acceso a contenido educativo estructurado en módulos, lecciones o cursos *(en fase de prototipo, contenido estático o simulado)*.
-  - Seguimiento del progreso del usuario (puntuaciones, niveles, insignias, retos completados) *(módulo de gamificación en etapa inicial)*.
-  - Implementación de mecánicas de gamificación (sistema de recompensas, logros, tablas de clasificación) *(planeado para fases futuras)*.
-  - Integración de APIs externas (por ejemplo, recursos educativos, videoconferencias o foros colaborativos) *(a definir en etapas posteriores)*.
+  - Gestión y administración de perfiles (roles: alumno, profesor, administrador) – Se han implementado funcionalidades básicas y avanzadas para la gestión de usuarios:
+    - Registro de profesores y alumnos.
+    - Edición de credenciales de profesores y alumnos.
+    - Habilitación/bloqueo de usuarios (alumnos y profesores).
+    - Asignación de alumnos a profesores (relación N:M, donde un alumno puede tener varios profesores y viceversa).
+  - Acceso a contenido educativo estructurado en módulos, lecciones o cursos (contenido simulado en el prototipo).
+  - Seguimiento del progreso del usuario (puntuaciones, niveles, insignias, retos completados) – Módulo de gamificación en etapa inicial.
+  - Implementación de mecánicas de gamificación (recompensas, logros, tablas de clasificación) – Planeado para fases futuras.
+  - Integración de APIs externas (por ejemplo, recursos educativos, videoconferencias o foros colaborativos) – A definir en etapas posteriores.
 
 - **Requisitos no funcionales:**
-  - Escalabilidad y rendimiento: arquitectura modular que permita crecimiento.
+  - Escalabilidad y rendimiento: arquitectura modular que permita el crecimiento.
   - Seguridad: protección de datos de usuario, autenticación robusta y autorización basada en roles.
   - Accesibilidad y responsive design: interfaces adaptables a diferentes dispositivos.
 
@@ -25,6 +29,7 @@ A continuación se detalla el análisis de requisitos, la arquitectura y la sele
   - “Como usuario, quiero inscribirme y acceder a cursos para mejorar mis habilidades.”
   - “Como usuario, quiero recibir recompensas e insignias para motivarme en mi aprendizaje.”
   - “Como administrador, quiero gestionar el contenido educativo y monitorizar el progreso de los alumnos.”
+  - “Como administrador, quiero gestionar profesores y alumnos, y asignar tutorías para que un alumno pueda tener múltiples profesores y viceversa.”
 
 ---
 
@@ -46,6 +51,8 @@ A continuación se detalla el análisis de requisitos, la arquitectura y la sele
   [ API Gateway / Backend REST API ]
            │
            ├── [ Módulo de Gestión de Usuarios ]
+           │      ├─ Gestión de alumnos y profesores
+           │      └─ Asignación de tutorías (relación N:M)
            ├── [ Módulo de Contenido Educativo ]
            ├── [ Módulo de Gamificación ]
            └── [ Integraciones Externas ]
@@ -59,42 +66,49 @@ A continuación se detalla el análisis de requisitos, la arquitectura y la sele
 ## 3. Selección de Tecnologías
 
 - **Frontend:**
-  - **Framework:** React (utilizando React Router para la navegación).
-  - **UI/UX:** Estilos personalizados y hoja de estilos compartida para las páginas (registro, inicio de sesión, home, dashboard, listado de usuarios).
-  - **Estado:** Se maneja localmente en cada componente; en fases futuras se podrá integrar Redux o Context API para estados globales complejos.
-  
+  - **Framework:** React (usando React Router para la navegación).
+  - **UI/UX:** Estilos personalizados y hoja de estilos compartida para páginas como Home, Registro, Login, Dashboard, Gestión de Usuarios, Gestión de Contenido, Configuración de Gamificación y Asignación de Tutorías.
+  - **Estado:** Manejo local en componentes; en el futuro se podrá integrar Redux o Context API para estados globales complejos.
+
 - **Backend:**
   - **Lenguaje y Framework:** Node.js con Express.
   - **Autenticación:** JWT para la gestión de tokens.
-  - **Persistencia:** Uso de SQLite a través de la librería `better-sqlite3` para el almacenamiento persistente de usuarios.
-  - **Caché/Simulación de Redis:** Uso de `redis-mock` para simular operaciones en Redis en desarrollo.
-  
+  - **Persistencia:** SQLite a través de la librería `better-sqlite3` para el almacenamiento de datos.
+  - **Caché/Simulación de Redis:** Uso de `redis-mock` para simular operaciones de caché en desarrollo.
+
 - **Base de Datos:**
-  - Se utiliza SQLite, gestionada con `better-sqlite3`, para persistir los datos de usuarios.
+  - Se utiliza SQLite, administrada con `better-sqlite3`, para persistir datos de usuarios y tutorías.
 
 ---
 
 ## 4. Planificación y Estructura del Proyecto
 
 - **Capa de Presentación (Frontend):**
-  - Páginas implementadas: Home, Registro, Inicio de Sesión, Dashboard y listado de Usuarios.
-  - Navegación implementada con React Router.
-  
+  - Páginas implementadas: Home, Registro, Login, Dashboard, Gestión de Usuarios, Gestión de Contenido, Configuración de Gamificación y Asignación de Tutorías.
+  - Navegación implementada mediante React Router. Los botones de registro y gestión de usuarios se han movido desde la página de inicio a la vista administrativa en `/admin/users`.
+
 - **Capa de Negocio (Backend):**
-  - Endpoints básicos implementados:
-    - `/api/auth/register`: Registro de usuarios.
-    - `/api/auth/login`: Inicio de sesión.
-    - `/api/users`: Listado de usuarios registrados.
-    - `/api/redis/keys`: Visualización de claves en Redis (simulado con redis-mock).
-  - Controladores de autenticación con manejo de hash (bcryptjs) y JWT.
-  
+  - Endpoints implementados:
+    - `/api/auth/register` y `/api/auth/login` para autenticación.
+    - `/api/users` para registro y listado de usuarios.
+    - `/api/superadmin` para el registro inicial del super administrador.
+    - `/api/admin` para la gestión avanzada de usuarios, contenido y gamificación.
+    - `/api/tutoring` para gestionar la asignación de tutorías entre profesores y alumnos (relación N:M).
+    - `/api/redis/keys` para la visualización de claves en Redis (simulado).
+  - Controladores de autenticación usan bcryptjs para el hashing de contraseñas y JWT para la generación de tokens.
+
 - **Capa de Datos:**
-  - Persistencia mediante SQLite con `better-sqlite3`.
-  
+  - Persistencia con SQLite usando `better-sqlite3`.
+  - Tablas implementadas: `users` (con campos para username, password, role y status) y `tutoring` (para la relación entre profesores y alumnos).
+
 - **Ciclo de Desarrollo Actual:**
-  - Implementación del MVP con funcionalidades básicas de registro, login y listado de usuarios.
-  - Interfaces frontend con un diseño moderno y responsivo (utilizando estilos CSS personalizados).
-  - Pruebas y validación manual a través de la interfaz web.
+  - Se ha implementado un MVP con registro, login, gestión básica de usuarios y contenido.
+  - Se han extendido las funcionalidades administrativas para:
+    - Registrar, editar y eliminar profesores y alumnos.
+    - Habilitar/bloquear usuarios.
+    - Asignar tutorías (relación N:M) entre profesores y alumnos.
+  - Interfaces frontend con diseño responsivo y moderno mediante hojas de estilo CSS personalizadas.
+  - Pruebas y validación manual mediante la interfaz web.
 
 ---
 
@@ -102,61 +116,73 @@ A continuación se detalla el análisis de requisitos, la arquitectura y la sele
 
 ### Backend
 - **Endpoints implementados:**
-  - Registro e inicio de sesión con validación y generación de JWT.
-  - Persistencia de datos en SQLite.
-  - Simulación de Redis mediante redis-mock para almacenar información adicional.
+  - Autenticación (registro e inicio de sesión) con generación de JWT.
+  - Gestión de usuarios (registro, edición, eliminación, actualización de estado) diferenciando roles: alumno, profesor y administrador.
+  - Gestión de contenido educativo (simulado).
+  - Gestión de gamificación (configuración inicial).
+  - Gestión de tutorías, permitiendo asignar múltiples profesores a un alumno y viceversa.
 - **Tecnologías utilizadas:**
   - Express, bcryptjs, jsonwebtoken, better-sqlite3 y redis-mock.
-- **Consideraciones:**
-  - El proyecto utiliza un modelo de datos sencillo (solo usuarios), lo cual es suficiente para el prototipo actual.
-  - Se eliminaron dependencias innecesarias (lowdb, nedb, redis) para mantener el proyecto limpio.
+- **Modelo de Datos:**
+  - Tabla `users` con campos: id, username, password, role y status.
+  - Tabla `tutoring` para relaciones N:M entre profesores y alumnos.
 
 ### Frontend
 - **Páginas implementadas:**
-  - **HomePage:** Página de bienvenida con enlaces a registro, inicio de sesión y listado de usuarios.
-  - **RegisterPage:** Formulario de registro de usuarios.
-  - **LoginPage:** Formulario de inicio de sesión.
-  - **Dashboard:** Página de muestra para el usuario autenticado (pendiente de ampliación).
-  - **UsersPage:** Listado de usuarios registrados.
-- **Diseño:** Se utilizan hojas de estilo CSS personalizadas para un diseño limpio y responsivo.
-- **Integración:** Se ha configurado el proxy para redirigir las peticiones al backend.
+  - **HomePage:** Página de bienvenida con enlaces a inicio de sesión y acceso administrativo.
+  - **RegisterPage:** Registro de usuarios.
+  - **LoginPage:** Inicio de sesión de usuarios.
+  - **Dashboard:** Página de muestra para usuarios autenticados.
+  - **UsersPage:** Listado de usuarios (vista pública).
+  - **SuperAdminPage:** Registro del primer administrador.
+  - **AdminLoginPage:** Inicio de sesión para administradores.
+  - **AdminDashboardPage:** Panel principal del administrador con enlaces a secciones.
+  - **AdminUsersPage:** Gestión de usuarios, incluyendo:
+    - Registro de nuevos profesores y alumnos.
+    - Edición de credenciales de profesores y alumnos.
+    - Habilitación/bloqueo de usuarios.
+  - **AdminContentPage:** Gestión de contenido educativo.
+  - **AdminGamificationPage:** Configuración de parámetros de gamificación.
+  - **AdminTutoringPage:** Asignación y gestión de tutorías entre profesores y alumnos.
+- **Diseño e Integración:**
+  - Uso de React Router para la navegación.
+  - Comunicación con el backend a través de fetch y el uso de tokens almacenados en localStorage.
+  - Diseño responsivo mediante hojas de estilo CSS personalizadas.
 
 ---
 
 ## 6. Próximos Pasos y Expectativas Realistas
 
-- **Fase de Ampliación de Funcionalidades:**
-  - **Roles y Perfiles:** Implementar la gestión avanzada de roles (alumno, profesor, administrador) y permisos asociados.
-  - **Contenido Educativo:** Integrar módulos, lecciones y cursos reales o simulados, junto con seguimiento del progreso.
-  - **Módulo de Gamificación:** Desarrollar la lógica para asignación de puntos, niveles, insignias y retos, con un posible motor de reglas.
-  - **Integraciones Externas:** Conectar con APIs de videoconferencias (Zoom, Jitsi) o recursos educativos para enriquecer el contenido.
-  - **Interacción en Tiempo Real:** Considerar el uso de WebSockets (Socket.IO) para notificaciones en tiempo real sobre logros o actualizaciones.
+- **Ampliación de Funcionalidades:**
+  - Mejorar la gestión avanzada de roles y permisos.
+  - Integrar contenido educativo real y seguimiento del progreso del usuario.
+  - Desarrollar un módulo de gamificación más sofisticado con retroalimentación en tiempo real.
+  - Integrar APIs externas para videoconferencias y foros colaborativos.
+  - Optimizar la comunicación en tiempo real mediante WebSockets (Socket.IO).
 
 - **Mejoras en Seguridad y Escalabilidad:**
-  - Fortalecer la seguridad de los endpoints y realizar pruebas de penetración.
-  - Evaluar la migración a una solución de base de datos más robusta (por ejemplo, MongoDB o PostgreSQL) si se requiere escalabilidad para producción.
+  - Realizar pruebas de penetración y fortalecer la seguridad de los endpoints.
+  - Considerar migrar a una base de datos más robusta (PostgreSQL o MongoDB) en producción.
 
 - **Despliegue y CI/CD:**
-  - Configurar un pipeline de integración continua (por ejemplo, GitHub Actions) para pruebas y despliegue.
-  - Desplegar el backend y frontend en una plataforma en la nube (Heroku, AWS, DigitalOcean).
+  - Configurar un pipeline de integración continua (por ejemplo, GitHub Actions).
+  - Desplegar el sistema en una plataforma en la nube (Heroku, AWS, DigitalOcean).
 
 ---
 
 ## 7. Gestión y Documentación
 
-- **Control de Versiones:** Se utiliza Git para gestionar el código y se sigue un flujo de trabajo basado en ramas para nuevas funcionalidades.
+- **Control de Versiones:** Se utiliza Git con un flujo de trabajo basado en ramas para incorporar nuevas funcionalidades.
 - **Documentación:**  
-  - Se recomienda documentar la API usando Swagger o Postman.
-  - La documentación del proyecto se actualizará conforme se implementen nuevas funcionalidades.
+  - La API se documentará mediante Swagger o Postman.
+  - Este README se actualizará conforme se avance en el desarrollo.
 - **Pruebas y QA:**  
-  - Se planifican pruebas unitarias y de integración para asegurar la estabilidad de la aplicación.
+  - Se planifican pruebas unitarias y de integración para asegurar la estabilidad del sistema.
 
 ---
 
 # Conclusión
 
-El proyecto se encuentra en una fase prototipo (MVP) con funcionalidades básicas de autenticación y persistencia de datos, y una interfaz frontend sencilla pero moderna. Las expectativas a futuro incluyen la ampliación de funcionalidades de gamificación, integración de contenido educativo y mejoras en seguridad y escalabilidad para preparar la plataforma para un entorno de producción.
+El proyecto se encuentra en una fase MVP con funcionalidades básicas de autenticación y persistencia, y se han extendido las capacidades administrativas para gestionar usuarios (alumnos y profesores) y sus relaciones de tutorías. Se espera que, a medida que avance el desarrollo, se integren nuevos módulos (contenido educativo y gamificación avanzada) y se fortalezcan aspectos de seguridad y escalabilidad para llevar la plataforma a un entorno de producción.
 
----
-
-*Este README se actualizará conforme avance el desarrollo y se integren nuevas funcionalidades.*
+*Este README se actualizará conforme avance el proyecto y se integren nuevas funcionalidades.*
